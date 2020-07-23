@@ -7,6 +7,7 @@ import com.imooc.entity.dto.Result;
 import com.imooc.service.combine.HeadLineShopCategoryCombineService;
 import com.imooc.service.solo.HeadLineService;
 import com.imooc.service.solo.ShopCategoryService;
+import org.simpleframework.core.annotation.Service;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * @Create 2020/7/16
  * @Since 1.0.0
  */
+@Service
 public class headLineShopCategoryCombineServiceImpl implements HeadLineShopCategoryCombineService {
 
     private HeadLineService headLineService;

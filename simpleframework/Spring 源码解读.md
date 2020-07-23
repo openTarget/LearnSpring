@@ -1,4 +1,5 @@
 # spring 源码解读
+> 反编译class文件: javap -verbose LazyDoubleCheckSingleton.class
 ## 框架中的设计模式
 ### 开闭原则
 > 一个软件实体，应该对扩展开放，对修改关闭。  
@@ -109,7 +110,7 @@ Field-->public void set（Object obj，Object value）：
 ```
 #### 反射的获取源
 + 用xml来保存类相关的信息以供反射调用
-```aidl
+```
 <xml version="1.0"encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -165,3 +166,64 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     + 避免在各处使用new来创建类，并且可以做到统一维护
     + 创建实例的时候不需要了解其中的细节
     + 反射+工厂模式的合体，满足开闭原则
+## 单例模式 Singleton Pattern
+> 确保一个类只有一个实例，并对外提供统一访问方式
++ 饿汉模式: 类被加载的时候就立即初始化并创建唯一实例
+    +  ```
+       package dome.annotation;
+       public class StarvingSingleton {
+           private final static StarvingSingleton instance = new StarvingSingleton();
+           private StarvingSingleton() {}
+           public static StarvingSingleton getInstance() {
+               return instance;
+           }
+       }
+       ```
++ 使用枚举来创建饿汉模式:
+    +  装备了枚举的饿汉模式能抵御反射与序列化的进攻，满足容器需求
+    +  ```aidl
+       package dome.annotation;
+       
+       public class EnumStarvingSingleton {
+       
+           private EnumStarvingSingleton(){}
+       
+           public static EnumStarvingSingleton getInstance() {
+               return ContainerHolder.HOLDER.instance;
+           }
+       
+           private enum ContainerHolder {
+               HOLDER,
+               ;
+               private EnumStarvingSingleton instance;
+               ContainerHolder() {
+                   instance = new EnumStarvingSingleton();
+               }
+           }
+       }
+       ```
++ 懒汉模式: 在被客户端首次调用的时候才创建唯一实例
+    + 加入双重检查锁机制的懒汉模式能确保线程安全
+    + ```
+      package dome.annotation;
+         public class LazyDoubleCheckSingleton {
+             private volatile static LazyDoubleCheckSingleton instance;
+             private LazyDoubleCheckSingleton() {}
+             public static LazyDoubleCheckSingleton getInstance() {
+                 // 第一次检测
+                 if (instance == null) {
+                     // 同步
+                     synchronized (LazyDoubleCheckSingleton.class) {
+                         // 第二次检测
+                         if (instance == null) {
+                             // memory = allocate(); // 分配对象内存空间
+                             // instance(memory); 初始化对象
+                             // instance = memory; 设置instance指向刚分配的内存地址, 此时instance != null
+                             instance = new LazyDoubleCheckSingleton();
+                         }
+                     }
+                 }
+                 return instance;
+             }
+         }
+      ```
