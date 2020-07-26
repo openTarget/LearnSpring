@@ -3,6 +3,7 @@ package org.simpleframework;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.simpleframework.core.annotation.Component;
 import org.simpleframework.core.annotation.Controller;
 import org.simpleframework.core.annotation.Repository;
@@ -70,6 +71,10 @@ public class BeanContainer {
         return beanMap.size();
     }
 
+    /**
+     * 获取所有加注解的类的实例
+     * @param packageName
+     */
     public synchronized void loadBeans(String packageName) {
         // 判断bean容器是否被加载过
         if (isLoaded()) {
@@ -143,8 +148,9 @@ public class BeanContainer {
      * 获取所有Bean集合
      *
      * @return Bean集合
+     * @param clazz
      */
-    public Set <Object> getBeans() {
+    public Set <Object> getBeans(Class<?> clazz) {
         return new HashSet <>(beanMap.values());
     }
 
@@ -170,6 +176,7 @@ public class BeanContainer {
         }
         return classSet.size() > 0 ? classSet : null;
     }
+
     /**
     *通过接口或者父类获取实现类或者子类的Class集合，不包括其本身
     *@param interfaceOrClass 接口Class或者父类Class

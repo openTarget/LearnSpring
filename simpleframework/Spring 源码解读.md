@@ -227,3 +227,21 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
              }
          }
       ```
+## 实现容器
+### 容器的组成部分
++ 保存Class对象及其实例载体
++ 容器的加载
++ 容器的操作方式
++ 皆为单例
+
+### 作用域
++ singleton: 单例模式
++ prototype: 原型模式 每使用一次getBean就会产生一个新的实例
++ request: 对于每次http请求的时候会产生一个新的bean(web应用)
++ session: session有效期内实例是唯一的,过了有效期后就是生成一个新的实例
++ globalsession:  
+
+### 实现容器的依赖注入
++ 定义相关的注解标签
++ 实现创建被注解标记的成员变量实例，并将其注入到成员变量里
++ 依赖注入的使用
