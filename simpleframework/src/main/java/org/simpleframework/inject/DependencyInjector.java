@@ -36,9 +36,11 @@ public class DependencyInjector {
             for (Field field : finalize) {
                 //3.找出被Autowired标记的成员变量
                 if (field.isAnnotationPresent(Autowired.class)) {
+                    Autowired autowired = field.getAnnotation(Autowired.class);
+                    String autowiredValue = autowired.value();
                     //4.获取这些成员变量的类型
                     Class<?> fieldType = field.getType();
-                    Object fieldValue = getFieldInstance(fieldType);
+                    Object fieldValue = getFieldInstance(fieldType, autowiredValue);
                     //5.获取这些成员变量的类型在容器里对应的实例
                     if (fieldValue == null) {
                         throw new RuntimeException("target fieldClass is:" + fieldType.getClass());
@@ -59,12 +61,12 @@ public class DependencyInjector {
      * @param fieldClass
      * @return
      */
-    private Object getFieldInstance(Class<?> fieldClass) {
+    private Object getFieldInstance(Class<?> fieldClass,String autowiredValue) {
         Object fieldValue = beanContainer.getBean(fieldClass);
         if (fieldValue != null) {
             return fieldValue;
         }else {
-            Class<?> implementClass = getImplementClass(fieldClass);
+            Class<?> implementClass = getImplementClass(fieldClass, autowiredValue);
             if (implementClass != null) {
                 return beanContainer.getBean(implementClass);
             } else {
@@ -74,10 +76,22 @@ public class DependencyInjector {
 
     }
 
-    private Class<?> getImplementClass(Class<?> fieldClass) {
+    private Class<?> getImplementClass(Class<?> fieldClass,String autowiredValue) {
         Set<Class<?>> classSet = beanContainer.getClassesBySuper(fieldClass);
         if (!ValidationUtil.isEmpty(classSet)) {
-
+            if (ValidationUtil.isEmpty(autowiredValue)) {
+                if (classSet.size() == 1) {
+                    return classSet.iterator().next();
+                } else {
+                    throw new RuntimeException("multiple implemented classes for" + fieldClass.getName() + "please");
+                }
+            } else {
+                for (Class<?> clazz : classSet) {
+                    if (autowiredValue.equals(clazz.getCanonicalName())) {
+                        return clazz;
+                    }
+                }
+            }
         }
         return null;
     }

@@ -8,6 +8,7 @@ import com.imooc.service.combine.HeadLineShopCategoryCombineService;
 import com.imooc.service.solo.HeadLineService;
 import com.imooc.service.solo.ShopCategoryService;
 import org.simpleframework.core.annotation.Service;
+import org.simpleframework.inject.Autowired;
 
 import java.util.List;
 
@@ -22,8 +23,10 @@ import java.util.List;
 @Service
 public class headLineShopCategoryCombineServiceImpl implements HeadLineShopCategoryCombineService {
 
+    @Autowired
     private HeadLineService headLineService;
 
+    @Autowired
     private ShopCategoryService shopCategoryService;
 
 

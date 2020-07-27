@@ -3,6 +3,7 @@ package com.imooc.service.solo.impl;
 import com.imooc.entity.bo.ShopCategory;
 import com.imooc.entity.dto.Result;
 import com.imooc.service.solo.ShopCategoryService;
+import org.simpleframework.core.annotation.Service;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @Create 2020/7/16
  * @Since 1.0.0
  */
+@Service
 public class ShopCategoryServiceImpl implements ShopCategoryService {
 
     @Override

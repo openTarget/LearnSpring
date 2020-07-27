@@ -8,4 +8,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD) // 只能添加到成员变量上
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Autowired {
+
+    String value() default "";
+
 }
