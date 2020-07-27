@@ -106,9 +106,10 @@ public class ClassUtil {
      */
     public static <T> T newInstatnce(Class<?> clazz,boolean accessible) {
         try {
-            Constructor<?> constructor = clazz.getDeclaredConstructor();
+            Constructor constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(accessible);
-            return (T) constructor.newInstance();
+            // 通过调用无参构造器实例化对象
+            return (T)constructor.newInstance();
         } catch (Exception e) {
             log.error("newInstatnce errot:{}", e);
             throw new RuntimeException(e);
